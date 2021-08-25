@@ -5,14 +5,19 @@ export default (compiler) => {
     let data = body.data;
     let config = body.config || {};
     if (!code || !data) {
-      return res.sendStatus(400);
+      res.sendStatus(400);
+    } else {
+      compiler.compile(code, data, config, (err, val) => {
+        if (err && err.length) {
+          res.status(500).json({
+            error: err
+          });
+        } else {
+          res.status(200).json({
+            data: val
+          });
+        }
+      });
     }
-    compiler.compile(code, data, config, function (err, val) {
-      if (err && err.length) {
-        res.status(500).json({error: err});
-        return;
-      }
-      res.status(200).json(val);
-    });
   };
 };

@@ -1,5 +1,5 @@
 {
-  "name": "@graffiticode/graffiticode-L0",
+  "name": "L138",
   "version": "0.0.1",
   "description": "Compiler as a service.",
   "author": "ARTCOMPILER",
@@ -7,7 +7,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/graffiticode/graffiticode-L0"
+    "url": "https://github.com/artcompiler/L138"
   },
   "type": "module",
   "devDependencies": {
@@ -32,8 +32,8 @@
     "webpack-cli": "^4.8.0"
   },
   "scripts": {
-    "build": "npx webpack --config config/webpack.config.js --mode production; cp src/style.css dist",
-    "build:dev": "npx webpack --config config/webpack.config.js --mode development; cp src/style.css dist",
+    "build": "npx webpack --config config/webpack.config.js --mode production; cp src/style.css dist; cp src/lexicon.js dist",
+    "build:dev": "npx webpack --config config/webpack.config.js --mode development; cp src/style.css dist; cp src/lexicon.js dist",
     "start": "node app.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --config config/jest.config.js",
     "watch": "nodemon -w src -w app.js -w package.json --exec make"

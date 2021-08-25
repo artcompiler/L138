@@ -28,7 +28,7 @@ export class Transformer extends BasisTransformer {
 }
 
 export const compiler = new BasisCompiler({
-  langID: 0,
+  langID: 138,
   version: 'v0.0.0',
   Checker: Checker,
   Transformer: Transformer,
