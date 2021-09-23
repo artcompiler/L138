@@ -3,7 +3,7 @@ export default (compiler) => {
     let body = req.body;
     let code = body.code || body.src;
     let data = body.data;
-    let config = body.config || {};
+    let config = Object.assign({}, body.options, body.config);
     if (!code || !data) {
       res.sendStatus(400);
     } else {

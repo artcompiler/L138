@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@graffiticode/basis": "^1.0.11",
+    "bent": "^7.3.12",
     "d3": "^6.7.0",
     "express": "^4.17.1",
     "hashids": "^2.2.8",
