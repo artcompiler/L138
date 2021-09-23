@@ -4,6 +4,7 @@ export default (compiler) => {
     let code = body.code || body.src;
     let data = body.data;
     let config = Object.assign({}, body.options, body.config);
+    console.log("POST /compile config=" + JSON.stringify(config, null, 2));
     if (!code || !data) {
       res.sendStatus(400);
     } else {
