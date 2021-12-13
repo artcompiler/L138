@@ -17,7 +17,9 @@ function renderElts(data) {
       switch(node.type) {
       case 'upload':
         elts.push(
-          <input id="fileupload" name="myfile" type="file" onChange={handleChange} />
+          <div>
+            <input id="fileupload" name="myfile" type="file" onChange={handleChange} />
+          </div>
         );
       default:
         break;
@@ -48,12 +50,10 @@ function handleChange(e) {
   const reader = new FileReader;
   reader.readAsText(file);
   reader.onload = (e) => {
-    const data = JSON.parse(e.target.result);
+    const data = JSON.parse(e.target.result).data;
     window.gcexports.dispatcher.dispatch({
       [window.gcexports.id]: {
         data: data,
-        refresh: true,
-        recompileCode: true,
       }
     });
   };

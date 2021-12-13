@@ -82,10 +82,9 @@ export class Transformer extends BasisTransformer {
   UPLOAD(node, options, resume) {
     this.visit(node.elts[0], options, async (e0, v0) => {
       const err = [];
-      const val = {
-        type: 'upload',
-        elts: [],
-      };
+      const val =
+            options.data && Object.keys(options.data).length && options.data
+            || {type: 'upload', elts: [v0]};
       resume(err, val);
     });
   }
