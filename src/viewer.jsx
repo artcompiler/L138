@@ -4,16 +4,15 @@ import * as d3 from 'd3';
 import './style.css';
 
 function renderElts(data) {
-  const elts = [];
+  let elts = [];
   let key = 1;
   data.forEach(node => {
-    if (node.type === undefined && node.elts === undefined) {
+    if (node.type === undefined) {
       // We have raw data.
       elts.push(
         <pre key={key += 1}>{ JSON.stringify(node, null, 2) }</pre>
       );
     } else {
-      const children = renderElts(node.elts);
       switch(node.type) {
       case 'upload':
         elts.push(
@@ -21,6 +20,10 @@ function renderElts(data) {
             <input id="fileupload" name="myfile" type="file" onChange={handleChange} />
           </div>
         );
+        break;
+      case 'fetch':
+        elts = elts.concat(renderElts(node.elts));
+        break;
       default:
         break;
       }
@@ -44,6 +47,15 @@ export class Viewer extends React.Component {
   }
 }
 
+function dispatchData(data) {
+  window.gcexports.dispatcher.dispatch({
+    [window.gcexports.id]: {
+      data: data,
+    }
+  });
+}
+
+
 function handleChange(e) {
   const inputElement = e.target;
   const file = inputElement.files[0];
@@ -51,11 +63,7 @@ function handleChange(e) {
   reader.readAsText(file);
   reader.onload = (e) => {
     const data = JSON.parse(e.target.result).data;
-    window.gcexports.dispatcher.dispatch({
-      [window.gcexports.id]: {
-        data: data,
-      }
-    });
+    dispatchData(data);
   };
 }
 

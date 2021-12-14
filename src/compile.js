@@ -41,52 +41,59 @@ export class Transformer extends BasisTransformer {
       resume(err, val);
     });
   }
+
   FETCH(node, options, resume) {
-    const TRY_JSON = 1;
-    const TRY_CSV = 2;
-    this.visit(node.elts[0], options, async (e0, v0) => {
-      try {
-        const key = options.config && options.config.key && `&key=${options.config.key}` || '';
-        const url = v0.trim() + key;
-        const data = await getData(url);
-        let obj;
-        const firstTry = url.indexOf('.csv') === url.length - '.csv'.length && TRY_CSV || TRY_JSON;
+    if (options.data && Object.keys(options.data).length) {
+      resume([], options.data);
+    } else {
+      const TRY_JSON = 1;
+      const TRY_CSV = 2;
+      this.visit(node.elts[0], options, async (e0, v0) => {
         try {
-          if (firstTry === TRY_CSV) {
-            obj = d3.csvParse(data);
-          } else {
-            obj = JSON.parse(data);
-          }
-        } catch (x) {
+          const key = options.config && options.config.key && `&key=${options.config.key}` || '';
+          const url = v0.trim() + key;
+          const data = await getData(url);
+          let obj;
+          const firstTry = url.indexOf('.csv') === url.length - '.csv'.length && TRY_CSV || TRY_JSON;
           try {
-            if (firstTry === TRY_JSON) {
-              // We tried JSON, so now try CSV.
+            if (firstTry === TRY_CSV) {
               obj = d3.csvParse(data);
             } else {
               obj = JSON.parse(data);
             }
           } catch (x) {
-            console.log("ERROR unrecognized format for data=" + data);
+            try {
+              if (firstTry === TRY_JSON) {
+                // We tried JSON, so now try CSV.
+                obj = d3.csvParse(data);
+              } else {
+                obj = JSON.parse(data);
+              }
+            } catch (x) {
+              console.log("ERROR unrecognized format for data=" + data);
+            }
           }
+          const err = [];
+          const val = obj;
+          resume(err, {type: 'fetch', elts: [val]});
+        } catch (err) {
+          console.log(JSON.stringify(err, null, 2));
+          resume(err);
         }
-        const err = [];
-        const val = obj;
-        resume(err, val);
-      } catch (err) {
-        console.log(JSON.stringify(err, null, 2));
-        resume(err);
-      }
-    });
+      });
+    }
   }
-  
+
   UPLOAD(node, options, resume) {
-    this.visit(node.elts[0], options, async (e0, v0) => {
-      const err = [];
-      const val =
-            options.data && Object.keys(options.data).length && options.data
-            || {type: 'upload', elts: [v0]};
-      resume(err, val);
-    });
+    if (options.data && Object.keys(options.data).length) {
+      resume([], options.data);
+    } else {
+      this.visit(node.elts[0], options, async (e0, v0) => {
+        const err = [];
+        const val = {type: 'upload', elts: [v0]};
+        resume(err, val);
+      });
+    }
   }
 }
 
